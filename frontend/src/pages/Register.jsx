@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Zap, Mail, Lock } from 'lucide-react'
+import { Zap, User, Mail, Lock } from 'lucide-react'
 import api from '../services/api.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import AuthLayout from '../components/AuthLayout.jsx'
 
-export default function Login() {
+export default function Register() {
   const { login } = useAuth()
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -17,8 +18,8 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const response = await api.post('/api/auth/login', { email, password })
-      login(response.data) // stores the token; App re-renders into the app
+      const response = await api.post('/api/auth/register', { name, email, password })
+      login(response.data)
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong')
     } finally {
@@ -33,10 +34,19 @@ export default function Login() {
         EV Route Planner
       </div>
 
-      <h1>Welcome back</h1>
-      <p className="auth-sub">Sign in to continue planning smarter electric journeys.</p>
+      <h1>Create your account</h1>
+      <p className="auth-sub">Start planning smarter electric road trips in minutes.</p>
 
       <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Name</label>
+          <div className="input-wrap">
+            <span className="input-icon"><User size={16} /></span>
+            <input value={name} onChange={(e) => setName(e.target.value)}
+              placeholder="Your name" required />
+          </div>
+        </div>
+
         <div className="field">
           <label>Email</label>
           <div className="input-wrap">
@@ -51,19 +61,19 @@ export default function Login() {
           <div className="input-wrap">
             <span className="input-icon"><Lock size={16} /></span>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••" required />
+              placeholder="At least 6 characters" required />
           </div>
         </div>
 
         {error && <div className="error">{error}</div>}
 
         <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={loading}>
-          {loading ? 'Signing in…' : 'Sign in'}
+          {loading ? 'Creating account…' : 'Create account'}
         </button>
       </form>
 
       <p className="auth-switch">
-        Don't have an account? <Link to="/register">Create one</Link>
+        Already have an account? <Link to="/login">Sign in</Link>
       </p>
     </AuthLayout>
   )

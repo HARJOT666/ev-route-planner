@@ -21,7 +21,7 @@ or one flow.
 Example: the user clicks **Plan Trip**.
 
 ```
-React (Dashboard.jsx)
+React (TripPlanner.jsx + TripForm.jsx)
   │  axios POST /api/trips/plan  { start, dest, vehicleId, battery%, mode }
   │  Authorization: Bearer <JWT>        (added by axios interceptor)
   ▼
@@ -38,7 +38,8 @@ TripService.planTrip()
   ▼
 TripPlanResponse  (JSON)  → back through the controller → axios → React state
   ▼
-React renders TripResult.jsx  (stats, map, stops, rejected list, AI panel)
+React renders the result: RouteMap, TripSummary, ChargingTimeline,
+              StationAlternatives and AiAssistant components
 ```
 
 Key idea: **controller is thin, service holds the logic, optimizer is pure
@@ -320,5 +321,8 @@ earns its place, and keep everything else boringly simple and readable.**
 | Gemini | `service/GeminiService.java` |
 | Trip persistence | `service/TripService.java` |
 | Data model | `model/` package |
-| The React planner | `frontend/src/pages/Dashboard.jsx` |
-| The result UI + map | `frontend/src/components/TripResult.jsx`, `MapView.jsx` |
+| The React planner page | `frontend/src/pages/TripPlanner.jsx`, `components/TripForm.jsx` |
+| The map | `frontend/src/components/RouteMap.jsx` |
+| Summary stats + itinerary | `components/TripSummary.jsx`, `components/ChargingTimeline.jsx` |
+| Alternatives + AI assistant | `components/StationAlternatives.jsx`, `components/AiAssistant.jsx` |
+| Trip history page | `frontend/src/pages/TripHistory.jsx` |
