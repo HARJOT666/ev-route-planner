@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ev-route-planner
+
+  # ---- PostgreSQL (persistent source of truth) ----
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:evrouteplanner}
+    username: ${DB_USER:evuser}
+    password: ${DB_PASSWORD:evpass}
+  jpa:
+    hibernate:
+      ddl-auto: update       # auto-create/update tables from entities (fine for a demo project)
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  # ---- Redis (cache-aside for charging station lookups) ----
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  # ---- Kafka (async charging station status events) ----
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    # We send events as plain JSON strings, so both sides use String serializers.
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: ev-route-planner
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+# ---- Application-specific settings ----
+app:
+  jwt:
+    # In real deployments set APP_JWT_SECRET via environment. This default is only for local dev.
+    secret: ${APP_JWT_SECRET:change-me-please-use-a-long-random-secret-key-of-at-least-32-bytes}
+    expiration-ms: 86400000   # 24 hours
+
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    # Gemini REST endpoint. The API key is added as a query parameter at call time.
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent
+
+  station-cache-ttl-seconds: 300   # 5 minutes TTL for cached station lookups
