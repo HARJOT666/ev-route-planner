@@ -1,4 +1,4 @@
-# ⚡ EV Route Planner with Charging-Stop Optimization
+#  EV Route Planner with Charging-Stop Optimization
 
 Plan an electric-vehicle road trip: enter a start, a destination and your current
 battery level, and the app tells you **whether you can make it**, **where to
